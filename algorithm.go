@@ -36,9 +36,8 @@ func main() {
 	l.Add(1)
 	l.Add(8)
 	l.PrintList()
-	// l.RemoveDup()
-	fmt.Println("-------")
-	fmt.Println(l.Search(8))
+	l.RemoveDup()
+
 	fmt.Println("-------")
 	l.PrintList()
 }
@@ -242,6 +241,7 @@ func (l *List) RemoveDup() { // 用两个变量控制外循环和内循环中的
 			l.Delete(v - delCount)
 			delCount++
 		}
+		delCount = 0
 		cur = cur.next
 	}
 }
