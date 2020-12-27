@@ -20,13 +20,26 @@ func main() {
 	l.InsertReverse()
 	fmt.Println(l.isNull())
 	l.PrintList() */
-	for i := 0; i <= 20; i++ {
+	/*for i := 0; i <= 20; i++ {
 		for j := 0; j < i; j++ {
 			l.Add(i)
 		}
-	}
+	}*/
+	l.Add(8)
+	l.Add(0)
+	l.Add(0)
+	l.Add(1)
+	l.Add(3)
+	l.Add(8)
+	l.Add(1)
+	l.Add(0)
+	l.Add(1)
+	l.Add(8)
 	l.PrintList()
-	l.RemoveDup()
+	// l.RemoveDup()
+	fmt.Println("-------")
+	fmt.Println(l.Search(8))
+	fmt.Println("-------")
 	l.PrintList()
 }
 
@@ -130,15 +143,32 @@ func (l *List) Delete(i int) error {
 	return nil
 }
 
-func (l *List) Search(v interface{}) int {
-	pre := l.head
+func (l *List) Search(v interface{}) []int {
+	cur := l.head.next
+	var result = []int{}
 	for pos := 0; pos <= l.GetLength()-1; pos++ {
-		if pre.next.data == v {
-			return pos
+		if cur.data == v {
+			result = append(result, pos)
+		} else if cur == nil {
+			return result
 		}
-		pre = pre.next
+		cur = cur.next
 	}
-	return -1
+	if len(result) == 0 {
+		result = append(result, -1)
+	}
+	return result
+}
+
+func (l *List) SearchN(n int) *Node {
+	cur := l.head.next
+	for pos := 0; ; pos++ {
+		if pos == n {
+			return cur
+		}
+		cur = cur.next
+	}
+	return nil
 }
 
 func (l *List) isNull() bool {
@@ -187,7 +217,7 @@ func (l *List) InsertReverse() { // 从第二个元素开始，插到[0]位置�
 	}
 }
 
-func (l *List) RemoveDup() { // 用两个变量控制外循环和内循环中的Node，通过NestLoop的方式进行对比删除
+func (l *List) RemoveDupOrder() { // 用两个变量控制外循环和内循环中的Node，通过NestLoop的方式进行对比删除(顺序删除)
 	cur := l.head.next
 	var tmp *Node
 	for pos := 0; pos <= l.GetLength()-1; pos++ {
@@ -197,6 +227,20 @@ func (l *List) RemoveDup() { // 用两个变量控制外循环和内循环中的
 				l.Delete(cursor)
 			}
 			tmp = tmp.next
+		}
+		cur = cur.next
+	}
+}
+
+func (l *List) RemoveDup() { // 用两个变量控制外循环和内循环中的Node，通过NestLoop的方式进行对比删除
+	cur := l.head.next
+	delCount := 0
+	for cur != nil {
+		cursors := l.Search(cur.data)
+		cursors = cursors[1:]
+		for _, v := range cursors {
+			l.Delete(v - delCount)
+			delCount++
 		}
 		cur = cur.next
 	}
