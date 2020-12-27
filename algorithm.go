@@ -9,7 +9,7 @@ import (
 func main() {
 	l := NewList()
 
-	for i := 0; i < 3; i++ {
+	/*for i := 0; i < 20; i++ {
 		err := l.Insert(i, i)
 		if err != nil {
 			fmt.Println(err)
@@ -17,8 +17,16 @@ func main() {
 		}
 	}
 	l.PrintList()
-	l.Reverse()
+	l.InsertReverse()
 	fmt.Println(l.isNull())
+	l.PrintList() */
+	for i := 0; i <= 20; i++ {
+		for j := 0; j < i; j++ {
+			l.Add(i)
+		}
+	}
+	l.PrintList()
+	l.RemoveDup()
 	l.PrintList()
 }
 
@@ -95,6 +103,18 @@ func (l *List) Insert(i int, v interface{}) error { // i从0开始计算
 	return nil
 }
 
+func (l *List) Add(v interface{}) {
+	n := NewNode(v)
+	cur := l.head
+	for pos := 0; ; pos++ {
+		if cur.next == nil {
+			cur.next = n
+			break
+		}
+		cur = cur.next
+	}
+}
+
 func (l *List) Delete(i int) error {
 	pre := l.head
 	if l.GetLength() < i+1 {
@@ -137,7 +157,7 @@ func (l *List) PrintList() {
 	}
 }
 
-func (l *List) Reverse() {
+func (l *List) Reverse() { // 就地翻转
 	var pre *Node = l.head.next
 	var cur *Node = pre.next
 	var next *Node = cur.next
@@ -154,5 +174,30 @@ func (l *List) Reverse() {
 		if cur != nil {
 			next = next.next
 		}
+	}
+}
+
+func (l *List) InsertReverse() { // 从第二个元素开始，插到[0]位置，实现翻转
+	cur := l.head.next.next
+	for pos := 1; pos <= l.GetLength()-1; pos++ {
+		l.Delete(pos)
+		l.Insert(0, cur.data)
+		// if cur == nil { break }
+		cur = cur.next
+	}
+}
+
+func (l *List) RemoveDup() { // 用两个变量控制外循环和内循环中的Node，通过NestLoop的方式进行对比删除
+	cur := l.head.next
+	var tmp *Node
+	for pos := 0; pos <= l.GetLength()-1; pos++ {
+		tmp = cur
+		for cursor := pos + 1; cursor <= l.GetLength()-1; cursor++ {
+			if tmp.data == tmp.next.data {
+				l.Delete(cursor)
+			}
+			tmp = tmp.next
+		}
+		cur = cur.next
 	}
 }
