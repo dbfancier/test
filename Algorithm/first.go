@@ -1,4 +1,4 @@
-package Chain
+package Algorithm
 
 import (
 	"fmt"
